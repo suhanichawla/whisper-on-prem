@@ -3,9 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Whisper Speech App - Download</title>
-    <meta name="description" content="Privacy-focused desktop app for speech-to-text using OpenAI Whisper. Download for Windows, macOS, and Linux.">
-    <meta name="keywords" content="speech to text, whisper, privacy, desktop app, transcription">
+    <title>Whisper Speech App - Privacy-First Speech-to-Text</title>
     <style>
         * {
             margin: 0;
@@ -24,429 +22,603 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 2rem;
-            min-height: 100vh;
+            padding: 0 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-content {
             display: flex;
-            flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        main {
+            padding-top: 100px;
         }
 
         .hero {
             text-align: center;
-            background: rgba(255, 255, 255, 0.95);
+            padding: 4rem 0;
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #fff, #e0e0e0);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .professional-badge {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .download-section {
+            background: white;
+            margin: 2rem 0;
             padding: 3rem;
             border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .logo {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: #2d3748;
-        }
-
-        .subtitle {
-            font-size: 1.2rem;
-            color: #718096;
-            margin-bottom: 2rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin: 2rem 0;
-            text-align: left;
-        }
-
-        .feature {
-            background: #f7fafc;
-            padding: 1.5rem;
-            border-radius: 12px;
-            border-left: 4px solid #667eea;
-        }
-
-        .feature h3 {
-            color: #2d3748;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .feature p {
-            color: #718096;
-            font-size: 0.9rem;
-        }
-
-        .downloads {
-            margin-top: 3rem;
-        }
-
-        .downloads h2 {
-            text-align: center;
-            margin-bottom: 2rem;
-            color: #2d3748;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
         }
 
         .download-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
+            gap: 2rem;
+            margin-top: 2rem;
         }
 
         .download-card {
-            background: #fff;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
             padding: 2rem;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
             text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .download-card:hover::before {
+            left: 100%;
         }
 
         .download-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+            border-color: #667eea;
         }
 
-        .os-icon {
+        .platform-icon {
             font-size: 3rem;
             margin-bottom: 1rem;
         }
 
-        .download-btn {
+        .download-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .installer-types {
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .installer-type {
             display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #667eea;
             color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            margin: 0.2rem;
+            font-size: 0.8rem;
+        }
+
+        .download-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
             padding: 1rem 2rem;
-            text-decoration: none;
             border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            margin-top: 1rem;
+            font-size: 1.1rem;
+            font-weight: bold;
             cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 1rem;
+            position: relative;
+            overflow: hidden;
         }
 
         .download-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        .download-btn.loading {
-            opacity: 0.7;
-            cursor: wait;
-        }
-
-        .system-requirements {
-            background: #fff3cd;
-            border: 1px solid #ffeaa7;
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .system-requirements h3 {
-            color: #856404;
-            margin-bottom: 1rem;
-        }
-
-        .requirements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .requirement {
-            color: #856404;
-        }
-
-        .footer {
-            text-align: center;
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid #e2e8f0;
-            color: #718096;
-        }
-
-        .github-link {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .github-link:hover {
-            text-decoration: underline;
+        .download-btn:active {
+            transform: translateY(0);
         }
 
         .version-info {
-            background: #e8f4fd;
-            border: 1px solid #bee3f8;
-            border-radius: 8px;
-            padding: 1rem;
-            margin-top: 1.5rem;
+            margin-top: 1rem;
             font-size: 0.9rem;
-            color: #2c5282;
+            color: #666;
+        }
+
+        .features {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 4rem 0;
+            margin: 2rem 0;
+            border-radius: 20px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .privacy-highlight {
+            background: linear-gradient(45deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 3rem;
+            border-radius: 20px;
+            text-align: center;
+            margin: 2rem 0;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .installation-steps {
+            background: white;
+            padding: 3rem;
+            border-radius: 20px;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-weight: bold;
+        }
+
+        footer {
+            background: rgba(0, 0, 0, 0.1);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        .auto-detect {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .recommended {
+            position: relative;
+        }
+
+        .recommended::after {
+            content: 'RECOMMENDED';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #ff6b6b;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.7rem;
+            font-weight: bold;
         }
 
         @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
+            .hero h1 {
+                font-size: 2.5rem;
             }
 
-            .hero {
-                padding: 2rem;
+            .nav-links {
+                display: none;
             }
 
-            h1 {
-                font-size: 2rem;
-            }
-
-            .subtitle {
-                font-size: 1rem;
+            .download-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="hero">
-            <div class="logo">🎙️</div>
-            <h1>Whisper Speech App</h1>
-            <p class="subtitle">
-                A privacy-focused desktop application that converts speech to text using OpenAI's Whisper models
-                running locally on your machine. Perfect for companies that don't allow cloud-based speech recognition tools.
-            </p>
-
-            <div class="features">
-                <div class="feature">
-                    <h3>🔒 100% Private</h3>
-                    <p>All processing happens locally on your device. No data sent to the cloud.</p>
-                </div>
-                <div class="feature">
-                    <h3>⚡ Multiple Models</h3>
-                    <p>Choose from tiny to large Whisper models based on your speed vs accuracy needs.</p>
-                </div>
-                <div class="feature">
-                    <h3>🎯 Global Hotkey</h3>
-                    <p>Hold Fn key (or Cmd+Space) anywhere to instantly record and transcribe speech.</p>
-                </div>
-                <div class="feature">
-                    <h3>🚀 Auto-paste</h3>
-                    <p>Transcribed text is automatically pasted into your active text field.</p>
-                </div>
-            </div>
-
-            <div class="downloads">
-                <h2>Download for Your Platform</h2>
-                <div class="download-grid">
-                    <div class="download-card">
-                        <div class="os-icon">🍎</div>
-                        <h3>macOS</h3>
-                        <p>macOS 10.14 or later</p>
-                        <a href="#" class="download-btn" data-platform="darwin-arm64">
-                            Download for Mac (Apple Silicon)
-                        </a>
-                        <br>
-                        <a href="#" class="download-btn" data-platform="darwin-x86_64" style="margin-top: 0.5rem;">
-                            Download for Mac (Intel)
-                        </a>
-                    </div>
-
-                    <div class="download-card">
-                        <div class="os-icon">🖥️</div>
-                        <h3>Windows</h3>
-                        <p>Windows 10 or later</p>
-                        <a href="#" class="download-btn" data-platform="windows-AMD64">
-                            Download for Windows
-                        </a>
-                    </div>
-
-                    <div class="download-card">
-                        <div class="os-icon">🐧</div>
-                        <h3>Linux</h3>
-                        <p>Ubuntu 18.04 or equivalent</p>
-                        <a href="#" class="download-btn" data-platform="linux-x86_64">
-                            Download for Linux
-                        </a>
-                    </div>
-                </div>
-
-                <div class="version-info">
-                    <p><strong>Latest Version:</strong> <span id="version-number">Loading...</span></p>
-                    <p><strong>Release Date:</strong> <span id="release-date">Loading...</span></p>
-                    <p><a href="#" id="all-releases-link" class="github-link">View all releases on GitHub</a></p>
-                </div>
-            </div>
-
-            <div class="system-requirements">
-                <h3>⚙️ System Requirements</h3>
-                <div class="requirements-grid">
-                    <div class="requirement">
-                        <strong>RAM:</strong> 4GB minimum (8GB+ recommended for larger models)
-                    </div>
-                    <div class="requirement">
-                        <strong>Storage:</strong> 2GB free space
-                    </div>
-                    <div class="requirement">
-                        <strong>Microphone:</strong> Required for speech input
-                    </div>
-                    <div class="requirement">
-                        <strong>Internet:</strong> Only for initial model download
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer">
-                <p>
-                    Open source project available on
-                    <a href="#" id="github-repo-link" class="github-link">GitHub</a>
-                </p>
-                <p style="margin-top: 1rem; font-size: 0.9rem;">
-                    Built with ❤️ using OpenAI Whisper • Completely free and open source
-                </p>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">🎤 Whisper Speech App</div>
+                <nav class="nav-links">
+                    <a href="#download">Download</a>
+                    <a href="#features">Features</a>
+                    <a href="#privacy">Privacy</a>
+                    <a href="https://github.com/suhanichawla/whisper-on-prem">GitHub</a>
+                </nav>
             </div>
         </div>
-    </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <section class="hero">
+                <div class="professional-badge">
+                    ⚡ Professional Installers Available
+                </div>
+                <h1>Whisper Speech App</h1>
+                <p>Privacy-first speech-to-text that runs entirely on your device</p>
+                <p>🔒 No cloud • 🚀 No setup • 📱 Professional installers</p>
+            </section>
+
+            <section id="download" class="download-section">
+                <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 1rem; color: #333;">
+                    📦 Professional Installation
+                </h2>
+                <p style="text-align: center; font-size: 1.2rem; color: #666; margin-bottom: 2rem;">
+                    Double-click to install. No technical knowledge required!
+                </p>
+
+                <div class="download-grid">
+                    <!-- Windows Card -->
+                    <div class="download-card recommended" id="windows-card">
+                        <div class="platform-icon">🪟</div>
+                        <h3>Windows 10/11</h3>
+                        <div class="installer-types">
+                            <span class="installer-type">.exe installer</span>
+                        </div>
+                        <p>Professional Windows installer with Start Menu shortcuts and uninstaller</p>
+                        <a href="#" class="download-btn" id="windows-download">
+                            Download for Windows
+                        </a>
+                        <div class="version-info" id="windows-version">
+                            Detecting latest version...
+                        </div>
+                        <div class="auto-detect">✨ Auto-detected OS</div>
+                    </div>
+
+                    <!-- macOS Card -->
+                    <div class="download-card" id="macos-card">
+                        <div class="platform-icon">🍎</div>
+                        <h3>macOS 10.14+</h3>
+                        <div class="installer-types">
+                            <span class="installer-type">.dmg disk image</span>
+                        </div>
+                        <p>Beautiful DMG with drag-and-drop installation to Applications folder</p>
+                        <a href="#" class="download-btn" id="macos-download">
+                            Download for macOS
+                        </a>
+                        <div class="version-info" id="macos-version">
+                            Detecting latest version...
+                        </div>
+                    </div>
+
+                    <!-- Linux Card -->
+                    <div class="download-card" id="linux-card">
+                        <div class="platform-icon">🐧</div>
+                        <h3>Linux (All Distros)</h3>
+                        <div class="installer-types">
+                            <span class="installer-type">.AppImage</span>
+                            <span class="installer-type">.deb package</span>
+                        </div>
+                        <p>Portable AppImage or native .deb package for Debian/Ubuntu</p>
+                        <a href="#" class="download-btn" id="linux-download">
+                            Download for Linux
+                        </a>
+                        <div class="version-info" id="linux-version">
+                            Detecting latest version...
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Installation Steps -->
+            <section class="installation-steps">
+                <h2 style="text-align: center; font-size: 2rem; margin-bottom: 2rem; color: #333;">
+                    🚀 Installation is Super Easy
+                </h2>
+
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div>
+                        <strong>Download</strong> the installer for your platform above
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div>
+                        <strong>Double-click</strong> to install (Windows/macOS) or run AppImage (Linux)
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div>
+                        <strong>Launch</strong> from Start Menu, Applications, or desktop shortcut
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div>
+                        <strong>Grant</strong> microphone permissions when prompted
+                    </div>
+                </div>
+
+                <div class="step">
+                    <div class="step-number">5</div>
+                    <div>
+                        <strong>Start transcribing!</strong> Use Fn key or Cmd+Space while speaking
+                    </div>
+                </div>
+            </section>
+
+            <!-- Privacy Highlight -->
+            <section class="privacy-highlight" id="privacy">
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">🔒 Your Privacy is Sacred</h2>
+                <p style="font-size: 1.3rem; margin-bottom: 1rem;">
+                    Unlike cloud-based solutions, Whisper Speech App processes everything locally on your device.
+                </p>
+                <p style="font-size: 1.1rem;">
+                    No data ever leaves your computer • No internet required after setup • No tracking • No accounts
+                </p>
+            </section>
+
+            <!-- Features -->
+            <section id="features" class="features">
+                <div class="container">
+                    <h2 style="text-align: center; font-size: 2.5rem; margin-bottom: 2rem; color: white;">
+                        ✨ Powerful Features
+                    </h2>
+
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">⚡</div>
+                            <h3>Lightning Fast</h3>
+                            <p>Choose from 5 Whisper models: tiny (39MB) for speed or large (1.5GB) for accuracy</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🎯</div>
+                            <h3>Global Hotkeys</h3>
+                            <p>Press Fn key or Cmd+Space from anywhere to start recording. Works in any application</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🚀</div>
+                            <h3>Auto-Paste</h3>
+                            <p>Transcribed text automatically appears where your cursor is. No copy-paste needed</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🎛️</div>
+                            <h3>System Tray</h3>
+                            <p>Runs quietly in the background. Always available, never intrusive</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">🌍</div>
+                            <h3>Multi-Language</h3>
+                            <p>Supports 99+ languages including English, Spanish, French, German, Chinese, and more</p>
+                        </div>
+
+                        <div class="feature-card">
+                            <div class="feature-icon">📱</div>
+                            <h3>Professional UI</h3>
+                            <p>Native desktop application with modern interface. Feels like part of your OS</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Whisper Speech App. Made with ❤️ for privacy-conscious users.</p>
+            <p>
+                <a href="https://github.com/suhanichawla/whisper-on-prem" style="color: white;">GitHub</a> •
+                <a href="https://github.com/suhanichawla/whisper-on-prem/issues" style="color: white;">Support</a>
+            </p>
+        </div>
+    </footer>
 
     <script>
-        // Configuration - UPDATE THESE VALUES
-        const GITHUB_OWNER = 'suhanichawla'; // Replace with your GitHub username
-        const GITHUB_REPO = 'whisper-on-prem'; // Replace with your repo name
-
-        // GitHub API URLs
-        const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`;
-        const RELEASES_URL = `${GITHUB_API_URL}/releases/latest`;
-        const REPO_URL = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}`;
-
-        // Platform mapping
-        const PLATFORM_MAPPING = {
-            'darwin-arm64': 'WhisperSpeechApp-darwin-arm64.zip',
-            'darwin-x86_64': 'WhisperSpeechApp-darwin-x86_64.zip',
-            'windows-AMD64': 'WhisperSpeechApp-windows-AMD64.zip',
-            'linux-x86_64': 'WhisperSpeechApp-linux-x86_64.zip'
-        };
-
-        // Auto-detect user's operating system and highlight the appropriate download
+        // Auto-detect user's operating system
         function detectOS() {
-            const userAgent = window.navigator.userAgent;
-            const platform = window.navigator.platform;
-            const macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
-            const windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
+            const userAgent = navigator.userAgent.toLowerCase();
+            if (userAgent.includes('win')) return 'windows';
+            if (userAgent.includes('mac')) return 'macos';
+            if (userAgent.includes('linux')) return 'linux';
+            return 'unknown';
+        }
 
-            let os = null;
+        // Highlight the detected OS
+        function highlightDetectedOS() {
+            const detectedOS = detectOS();
+            const cards = document.querySelectorAll('.download-card');
 
-            if (macosPlatforms.indexOf(platform) !== -1) {
-                os = 'macOS';
-            } else if (windowsPlatforms.indexOf(platform) !== -1) {
-                os = 'Windows';
-            } else if (/Linux/.test(platform)) {
-                os = 'Linux';
-            }
+            cards.forEach(card => {
+                card.classList.remove('recommended');
+                const autoDetect = card.querySelector('.auto-detect');
+                if (autoDetect) autoDetect.style.display = 'none';
+            });
 
-            if (os) {
-                const cards = document.querySelectorAll('.download-card');
-                cards.forEach(card => {
-                    if (card.querySelector('h3').textContent === os) {
-                        card.style.border = '2px solid #667eea';
-                        card.style.background = 'linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%)';
-                    }
-                });
+            if (detectedOS !== 'unknown') {
+                const detectedCard = document.getElementById(`${detectedOS}-card`);
+                if (detectedCard) {
+                    detectedCard.classList.add('recommended');
+                    const autoDetect = detectedCard.querySelector('.auto-detect');
+                    if (autoDetect) autoDetect.style.display = 'block';
+                }
             }
         }
 
-        // Fetch latest release information
+        // Fetch latest release information from GitHub
         async function fetchLatestRelease() {
             try {
-                const response = await fetch(RELEASES_URL);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
+                const response = await fetch('https://api.github.com/repos/suhanichawla/whisper-on-prem/releases/latest');
                 const release = await response.json();
-                return release;
-            } catch (error) {
-                console.error('Error fetching release:', error);
-                return null;
-            }
-        }
 
-        // Setup download links
-        async function setupDownloadLinks() {
-            const release = await fetchLatestRelease();
-
-            if (!release) {
-                // Fallback: show error or direct to GitHub
-                document.getElementById('version-number').textContent = 'Error loading';
-                document.getElementById('release-date').textContent = 'Visit GitHub for downloads';
-                document.getElementById('all-releases-link').href = `${REPO_URL}/releases`;
-
-                // Make download buttons link to GitHub releases
-                document.querySelectorAll('.download-btn').forEach(btn => {
-                    btn.href = `${REPO_URL}/releases/latest`;
-                    btn.textContent = 'Download from GitHub';
-                });
-                return;
-            }
-
-            // Update version info
-            document.getElementById('version-number').textContent = release.tag_name;
-            document.getElementById('release-date').textContent = new Date(release.published_at).toLocaleDateString();
-            document.getElementById('all-releases-link').href = `${REPO_URL}/releases`;
-
-            // Setup download buttons
-            document.querySelectorAll('.download-btn').forEach(btn => {
-                const platform = btn.getAttribute('data-platform');
-                const expectedFileName = PLATFORM_MAPPING[platform];
-
-                if (expectedFileName) {
-                    const asset = release.assets.find(asset =>
-                        asset.name === expectedFileName ||
-                        asset.name.includes(platform)
-                    );
-
-                    if (asset) {
-                        btn.href = asset.browser_download_url;
-                        btn.addEventListener('click', function() {
-                            this.classList.add('loading');
-                            this.textContent = 'Downloading...';
-                            setTimeout(() => {
-                                this.classList.remove('loading');
-                                this.textContent = this.getAttribute('data-original-text') || 'Download';
-                            }, 3000);
-                        });
-                    } else {
-                        btn.href = `${REPO_URL}/releases/latest`;
-                        btn.textContent = 'View on GitHub';
-                    }
+                if (release && release.assets) {
+                    updateDownloadLinks(release);
+                } else {
+                    console.log('No release data found');
                 }
-            });
+            } catch (error) {
+                console.error('Error fetching release data:', error);
+                // Fallback to direct GitHub releases page
+                setFallbackLinks();
+            }
         }
 
-        // Set GitHub repo links
-        function setupGitHubLinks() {
-            document.getElementById('github-repo-link').href = REPO_URL;
-            document.getElementById('all-releases-link').href = `${REPO_URL}/releases`;
+        function updateDownloadLinks(release) {
+            const version = release.tag_name || 'latest';
+            const assets = release.assets || [];
+
+            // Windows
+            const windowsAsset = assets.find(asset => asset.name.includes('Setup.exe'));
+            if (windowsAsset) {
+                document.getElementById('windows-download').href = windowsAsset.browser_download_url;
+                document.getElementById('windows-version').textContent = `Version ${version} • ${(windowsAsset.size / 1024 / 1024).toFixed(1)} MB`;
+            }
+
+            // macOS
+            const macosAsset = assets.find(asset => asset.name.includes('.dmg'));
+            if (macosAsset) {
+                document.getElementById('macos-download').href = macosAsset.browser_download_url;
+                document.getElementById('macos-version').textContent = `Version ${version} • ${(macosAsset.size / 1024 / 1024).toFixed(1)} MB`;
+            }
+
+            // Linux (prefer AppImage)
+            const linuxAsset = assets.find(asset => asset.name.includes('.AppImage')) ||
+                             assets.find(asset => asset.name.includes('.deb'));
+            if (linuxAsset) {
+                document.getElementById('linux-download').href = linuxAsset.browser_download_url;
+                document.getElementById('linux-version').textContent = `Version ${version} • ${(linuxAsset.size / 1024 / 1024).toFixed(1)} MB`;
+            }
+        }
+
+        function setFallbackLinks() {
+            const baseUrl = 'https://github.com/suhanichawla/whisper-on-prem/releases/latest';
+
+            document.getElementById('windows-download').href = baseUrl;
+            document.getElementById('macos-download').href = baseUrl;
+            document.getElementById('linux-download').href = baseUrl;
+
+            document.querySelectorAll('.version-info').forEach(el => {
+                el.textContent = 'Click to view latest releases';
+            });
         }
 
         // Initialize page
-        window.addEventListener('DOMContentLoaded', function() {
-            detectOS();
-            setupGitHubLinks();
-            setupDownloadLinks();
-
-            // Store original button text
-            document.querySelectorAll('.download-btn').forEach(btn => {
-                btn.setAttribute('data-original-text', btn.textContent);
-            });
+        document.addEventListener('DOMContentLoaded', function() {
+            highlightDetectedOS();
+            fetchLatestRelease();
         });
     </script>
 </body>

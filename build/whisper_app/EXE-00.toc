@@ -47,7 +47,7 @@
  [],
  False,
  False,
- 1749908712,
+ 1749911029,
  [('runw',
    '/Users/schawla/.pyenv/versions/3.11.12/lib/python3.11/site-packages/PyInstaller/bootloader/Darwin-64bit/runw',
    'EXECUTABLE')],

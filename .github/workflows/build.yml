@@ -1,4 +1,4 @@
-name: Build and Release
+name: Build Professional Installers
 
 on:
   push:
@@ -38,7 +38,17 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       run: |
         sudo apt-get update
-        sudo apt-get install -y portaudio19-dev python3-pyaudio
+        sudo apt-get install -y portaudio19-dev python3-pyaudio wget
+        # For .deb package creation
+        sudo apt-get install -y dpkg-dev
+
+    - name: Install system dependencies (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        # Install NSIS for Windows installer creation
+        choco install nsis -y
+        # Add NSIS to PATH
+        echo "C:\Program Files (x86)\NSIS" >> $GITHUB_PATH
 
     - name: Install system dependencies (macOS)
       if: startsWith(matrix.os, 'macos')
@@ -51,26 +61,72 @@ jobs:
         pip install --index-url https://pypi.org/simple/ --trusted-host pypi.org pyinstaller
         pip install -r requirements.txt
 
-    - name: Build executable
+    - name: Build executables
       run: python build_executables.py
+
+    - name: Build Windows installer
+      if: matrix.os == 'windows-latest'
+      run: |
+        # Create necessary directories
+        mkdir -p installers/windows
+        python build_installers.py
+
+    - name: Build macOS installer
+      if: startsWith(matrix.os, 'macos')
+      run: |
+        chmod +x installers/macos/create_dmg.sh
+        python build_installers.py
+
+    - name: Build Linux installer
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        chmod +x installers/linux/create_appimage.sh
+        python build_installers.py
 
     - name: List distribution files (Windows)
       if: runner.os == 'Windows'
       run: |
-        if (Test-Path "distributions") { Get-ChildItem -Path distributions -Recurse } else { Write-Host "No distributions folder" }
-        Get-ChildItem -Path . -Name "*.zip" -Recurse -ErrorAction SilentlyContinue
+        if (Test-Path "distributions") {
+          Write-Host "Distribution files:"
+          Get-ChildItem -Path distributions -Recurse
+        } else {
+          Write-Host "No distributions folder"
+        }
 
     - name: List distribution files (Unix)
       if: runner.os != 'Windows'
       run: |
-        ls -la distributions/ || echo "No distributions folder"
-        find . -name "*.zip" -type f || echo "No zip files found"
+        if [ -d "distributions" ]; then
+          echo "Distribution files:"
+          ls -la distributions/
+        else
+          echo "No distributions folder"
+        fi
 
-    - name: Upload Release Asset
+    - name: Upload Windows installer
+      if: matrix.os == 'windows-latest'
       uses: actions/upload-artifact@v4
       with:
-        name: WhisperSpeechApp-${{ matrix.platform }}
-        path: distributions/WhisperSpeechApp-${{ matrix.platform }}.zip
+        name: WhisperSpeechApp-Setup-Windows
+        path: distributions/WhisperSpeechApp-Setup.exe
+        if-no-files-found: error
+
+    - name: Upload macOS installer
+      if: startsWith(matrix.os, 'macos')
+      uses: actions/upload-artifact@v4
+      with:
+        name: WhisperSpeechApp-${{ matrix.platform }}-DMG
+        path: distributions/*.dmg
+        if-no-files-found: error
+
+    - name: Upload Linux installers
+      if: matrix.os == 'ubuntu-latest'
+      uses: actions/upload-artifact@v4
+      with:
+        name: WhisperSpeechApp-Linux-Packages
+        path: |
+          distributions/*.AppImage
+          distributions/*.deb
         if-no-files-found: error
 
   release:
@@ -88,41 +144,73 @@ jobs:
 
     - name: List downloaded artifacts
       run: |
-        find artifacts/ -type f -name "*.zip" || echo "No zip files in artifacts"
+        echo "Downloaded artifacts:"
+        find artifacts/ -type f || echo "No files in artifacts"
         ls -la artifacts/
 
     - name: Prepare release assets
       run: |
         mkdir -p release-assets
-        find artifacts/ -name "*.zip" -exec cp {} release-assets/ \;
+
+        # Copy all installer files
+        find artifacts/ -name "*.exe" -exec cp {} release-assets/ \;
+        find artifacts/ -name "*.dmg" -exec cp {} release-assets/ \;
+        find artifacts/ -name "*.AppImage" -exec cp {} release-assets/ \;
+        find artifacts/ -name "*.deb" -exec cp {} release-assets/ \;
+
+        echo "Release assets:"
         ls -la release-assets/
 
     - name: Create Release
       uses: softprops/action-gh-release@v2
       with:
-        files: release-assets/*.zip
+        files: release-assets/*
         draft: false
         prerelease: false
         generate_release_notes: true
         body: |
-          ## 🎉 New Release of Whisper Speech App
+          ## 🎉 Professional Installers for Whisper Speech App
 
-          ### Downloads
-          - **Windows**: WhisperSpeechApp-windows-AMD64.zip
-          - **macOS (Apple Silicon)**: WhisperSpeechApp-darwin-arm64.zip
-          - **macOS (Intel)**: WhisperSpeechApp-darwin-x86_64.zip
-          - **Linux**: WhisperSpeechApp-linux-x86_64.zip
+          ### 🚀 Easy Installation - No Technical Knowledge Required!
 
-          ### Installation
-          1. Download the appropriate file for your platform
-          2. Extract the zip file
-          3. Run the application (see README in the extracted folder)
+          **Windows Users:** Download and run `WhisperSpeechApp-Setup.exe`
+          - Double-click to install
+          - Creates Start Menu shortcuts
+          - Installs to Program Files
+          - Includes uninstaller
 
-          ### Features
-          - 🔒 100% private - all processing happens locally
-          - ⚡ Multiple Whisper models (tiny to large)
-          - 🎯 Global hotkey support (Fn key or Cmd+Space)
-          - 🚀 Auto-paste transcribed text
+          **macOS Users:** Download the `.dmg` file
+          - Double-click to mount
+          - Drag app to Applications folder
+          - Launch from Applications or Spotlight
+
+          **Linux Users:** Choose your preferred format:
+          - `.AppImage` - Portable, works on any distribution (just double-click)
+          - `.deb` - For Debian/Ubuntu (install with `sudo dpkg -i filename.deb`)
+
+          ### ✨ Features
+          - 🔒 **100% Private** - All processing happens locally on your device
+          - ⚡ **Multiple Whisper Models** - From tiny (39MB) to large (1.5GB)
+          - 🎯 **Global Hotkeys** - Fn key or Cmd+Space to start recording
+          - 🚀 **Auto-paste** - Transcribed text appears instantly where you need it
+          - 🎛️ **System Tray** - Runs quietly in the background
+          - 📱 **Professional UI** - Native desktop application experience
+
+          ### 🔧 System Requirements
+          - **Windows:** Windows 10 or later
+          - **macOS:** macOS 10.14 (Mojave) or later
+          - **Linux:** Most modern distributions
+          - Microphone access required
+          - Internet connection for initial Whisper model download
+
+          ### 📖 Getting Started
+          1. Download the installer for your platform
+          2. Install/run the application
+          3. Grant microphone permissions when prompted
+          4. Choose your preferred Whisper model (tiny recommended for speed)
+          5. Use the global hotkey to start transcribing!
+
+          **Need Help?** Visit our [GitHub repository](https://github.com/${{ github.repository }}) for documentation and support.
 
           **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }}
       env:
