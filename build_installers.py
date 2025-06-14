@@ -29,39 +29,6 @@ def run_command(cmd, description="", cwd=None):
         safe_print(f"❌ Error: {e.stderr}")
         return False, str(e)
 
-def create_license_file():
-    """Create a license file for installers"""
-    license_content = """MIT License
-
-Copyright (c) 2024 Suhani Chawla
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-"""
-
-    # Ensure directory exists
-    os.makedirs("installers/windows", exist_ok=True)
-
-    with open("installers/windows/license.txt", "w") as f:
-        f.write(license_content)
-
-    safe_print("✅ Created license file")
-
 def build_windows_installer():
     """Build Windows NSIS installer"""
     safe_print("🏗️ Building Windows installer...")
@@ -93,13 +60,22 @@ def build_windows_installer():
     os.makedirs("installers/windows", exist_ok=True)
     os.makedirs("distributions", exist_ok=True)
 
-    # Create license file
-    create_license_file()
+    # Copy the dist folder to installers/windows for NSIS to find
+    windows_installer_dir = "installers/windows"
+    dist_copy_path = os.path.join(windows_installer_dir, "dist")
+
+    # Remove existing dist copy if it exists
+    if os.path.exists(dist_copy_path):
+        shutil.rmtree(dist_copy_path)
+
+    # Copy the entire WhisperSpeechApp folder as "dist"
+    shutil.copytree("dist/WhisperSpeechApp", dist_copy_path)
+    safe_print("✅ Copied application files to installer directory")
 
     # Change to the installers/windows directory to run NSIS
     original_dir = os.getcwd()
     try:
-        os.chdir("installers/windows")
+        os.chdir(windows_installer_dir)
 
         # Build installer (NSIS will create the .exe in the current directory)
         cmd = f'"{nsis_exe}" installer.nsi'
@@ -111,6 +87,11 @@ def build_windows_installer():
                 # Move installer to distributions folder
                 shutil.move("WhisperSpeechApp-Setup.exe", "../../distributions/")
                 safe_print("✅ Windows installer created: distributions/WhisperSpeechApp-Setup.exe")
+
+                # Clean up the copied dist folder
+                if os.path.exists("dist"):
+                    shutil.rmtree("dist")
+
                 return True
             else:
                 safe_print("❌ Installer was not created")

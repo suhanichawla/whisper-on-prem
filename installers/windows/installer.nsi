@@ -17,12 +17,9 @@ RequestExecutionLevel admin
 ; Modern UI
 !include "MUI2.nsh"
 !define MUI_ABORTWARNING
-!define MUI_ICON "icon.ico"
-!define MUI_UNICON "icon.ico"
 
 ; Pages
 !insertmacro MUI_PAGE_WELCOME
-!insertmacro MUI_PAGE_LICENSE "license.txt"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
@@ -47,8 +44,8 @@ VIAddVersionKey "LegalCopyright" "© ${APP_PUBLISHER}"
 Section "Install" SecInstall
     SetOutPath "$INSTDIR"
 
-    ; Copy all application files from the dist directory
-    File /r "..\..\dist\WhisperSpeechApp\*.*"
+    ; Copy all application files
+    File /r "dist\*.*"
 
     ; Create shortcuts
     CreateDirectory "$SMPROGRAMS\${APP_NAME}"

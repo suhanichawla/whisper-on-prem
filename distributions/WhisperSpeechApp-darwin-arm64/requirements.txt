@@ -1,8 +1,0 @@
-PyQt6
-pyaudio
-numpy
-openai-whisper
-torch
-torchaudio
-pynput
-pyperclip

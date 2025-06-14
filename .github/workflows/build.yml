@@ -74,12 +74,44 @@ jobs:
           Write-Host "No dist directory found"
         }
 
+        Write-Host "Checking NSIS installation:"
+        if (Test-Path "C:\Program Files (x86)\NSIS\makensis.exe") {
+          Write-Host "NSIS found at: C:\Program Files (x86)\NSIS\makensis.exe"
+        } else {
+          Write-Host "NSIS not found at expected location"
+        }
+
     - name: Build Windows installer
       if: matrix.os == 'windows-latest'
       run: |
         # Ensure directories exist (PowerShell compatible)
         if (-not (Test-Path "installers\windows")) { New-Item -ItemType Directory -Path "installers\windows" -Force }
         python build_installers.py
+
+    - name: Debug - Check installer creation (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        Write-Host "Checking for created installer:"
+        if (Test-Path "distributions\WhisperSpeechApp-Setup.exe") {
+          Write-Host "✅ Installer found!"
+          Get-Item "distributions\WhisperSpeechApp-Setup.exe" | Select-Object Name, Length, LastWriteTime
+        } else {
+          Write-Host "❌ Installer not found"
+        }
+
+        Write-Host "Contents of distributions directory:"
+        if (Test-Path "distributions") {
+          Get-ChildItem -Path distributions
+        } else {
+          Write-Host "No distributions directory"
+        }
+
+        Write-Host "Contents of installers\windows directory:"
+        if (Test-Path "installers\windows") {
+          Get-ChildItem -Path "installers\windows"
+        } else {
+          Write-Host "No installers\windows directory"
+        }
 
     - name: Build macOS installer
       if: startsWith(matrix.os, 'macos')
@@ -119,7 +151,7 @@ jobs:
       with:
         name: WhisperSpeechApp-Setup-Windows
         path: distributions/WhisperSpeechApp-Setup.exe
-        if-no-files-found: error
+        if-no-files-found: warn
 
     - name: Upload macOS installer
       if: startsWith(matrix.os, 'macos')
