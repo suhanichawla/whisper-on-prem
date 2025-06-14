@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whisper Speech App - Download</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #2d3748;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #718096;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+            text-align: left;
+        }
+
+        .feature {
+            background: #f7fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature h3 {
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature p {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .downloads {
+            margin-top: 3rem;
+        }
+
+        .downloads h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #2d3748;
+        }
+
+        .download-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .download-card {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .download-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .os-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .system-requirements {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .system-requirements h3 {
+            color: #856404;
+            margin-bottom: 1rem;
+        }
+
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .requirement {
+            color: #856404;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+            color: #718096;
+        }
+
+        .github-link {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .github-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero">
+            <div class="logo">🎙️</div>
+            <h1>Whisper Speech App</h1>
+            <p class="subtitle">
+                A privacy-focused desktop application that converts speech to text using OpenAI's Whisper models
+                running locally on your machine. Perfect for companies that don't allow cloud-based speech recognition tools.
+            </p>
+
+            <div class="features">
+                <div class="feature">
+                    <h3>🔒 100% Private</h3>
+                    <p>All processing happens locally on your device. No data sent to the cloud.</p>
+                </div>
+                <div class="feature">
+                    <h3>⚡ Multiple Models</h3>
+                    <p>Choose from tiny to large Whisper models based on your speed vs accuracy needs.</p>
+                </div>
+                <div class="feature">
+                    <h3>🎯 Global Hotkey</h3>
+                    <p>Hold Fn key (or Cmd+Space) anywhere to instantly record and transcribe speech.</p>
+                </div>
+                <div class="feature">
+                    <h3>🚀 Auto-paste</h3>
+                    <p>Transcribed text is automatically pasted into your active text field.</p>
+                </div>
+            </div>
+
+            <div class="downloads">
+                <h2>Download for Your Platform</h2>
+                <div class="download-grid">
+                    <div class="download-card">
+                        <div class="os-icon">🍎</div>
+                        <h3>macOS</h3>
+                        <p>macOS 10.14 or later</p>
+                        <a href="downloads/WhisperSpeechApp-darwin-arm64.zip" class="download-btn">
+                            Download for Mac (Apple Silicon)
+                        </a>
+                        <br>
+                        <a href="downloads/WhisperSpeechApp-darwin-x86_64.zip" class="download-btn" style="margin-top: 0.5rem;">
+                            Download for Mac (Intel)
+                        </a>
+                    </div>
+
+                    <div class="download-card">
+                        <div class="os-icon">🖥️</div>
+                        <h3>Windows</h3>
+                        <p>Windows 10 or later</p>
+                        <a href="downloads/WhisperSpeechApp-windows-AMD64.zip" class="download-btn">
+                            Download for Windows
+                        </a>
+                    </div>
+
+                    <div class="download-card">
+                        <div class="os-icon">🐧</div>
+                        <h3>Linux</h3>
+                        <p>Ubuntu 18.04 or equivalent</p>
+                        <a href="downloads/WhisperSpeechApp-linux-x86_64.zip" class="download-btn">
+                            Download for Linux
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="system-requirements">
+                <h3>⚙️ System Requirements</h3>
+                <div class="requirements-grid">
+                    <div class="requirement">
+                        <strong>RAM:</strong> 4GB minimum (8GB+ recommended for larger models)
+                    </div>
+                    <div class="requirement">
+                        <strong>Storage:</strong> 2GB free space
+                    </div>
+                    <div class="requirement">
+                        <strong>Microphone:</strong> Required for speech input
+                    </div>
+                    <div class="requirement">
+                        <strong>Internet:</strong> Only for initial model download
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer">
+                <p>
+                    Open source project available on
+                    <a href="https://github.com/yourusername/whisper-speech-app" class="github-link">GitHub</a>
+                </p>
+                <p style="margin-top: 1rem; font-size: 0.9rem;">
+                    Built with ❤️ using OpenAI Whisper • Completely free and open source
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Auto-detect user's operating system and highlight the appropriate download
+        function detectOS() {
+            const userAgent = window.navigator.userAgent;
+            const platform = window.navigator.platform;
+            const macosPlatforms = ['Macintosh', 'MacIntel', 'MacPPC', 'Mac68K'];
+            const windowsPlatforms = ['Win32', 'Win64', 'Windows', 'WinCE'];
+
+            let os = null;
+
+            if (macosPlatforms.indexOf(platform) !== -1) {
+                os = 'macOS';
+            } else if (windowsPlatforms.indexOf(platform) !== -1) {
+                os = 'Windows';
+            } else if (/Linux/.test(platform)) {
+                os = 'Linux';
+            }
+
+            if (os) {
+                const cards = document.querySelectorAll('.download-card');
+                cards.forEach(card => {
+                    if (card.querySelector('h3').textContent === os) {
+                        card.style.border = '2px solid #667eea';
+                        card.style.background = 'linear-gradient(135deg, #f8f9ff 0%, #e8f0ff 100%)';
+                    }
+                });
+            }
+        }
+
+        // Run on page load
+        window.addEventListener('DOMContentLoaded', detectOS);
+    </script>
+</body>
+</html>
