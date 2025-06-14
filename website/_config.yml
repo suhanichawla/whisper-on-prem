@@ -1,6 +1,6 @@
 title: "Whisper Speech App"
 description: "Privacy-focused desktop app for speech-to-text using OpenAI Whisper"
-url: "https://YOUR_USERNAME.github.io"
+url: "https://suhanichawla.github.io"
 baseurl: "/whisper-speech-app"
 
 # GitHub Pages settings
@@ -9,7 +9,7 @@ plugins:
   - jekyll-seo-tag
 
 # SEO settings
-author: "YOUR_NAME"
+author: "Suhani Chawla"
 twitter:
   username: YOUR_TWITTER_HANDLE
 

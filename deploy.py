@@ -202,7 +202,7 @@ Choose one of these options:
 
 1. Enable GitHub Pages in your repo settings
 2. Set source to `website/` folder
-3. Your site will be at `https://yourusername.github.io/whisper-speech-app`
+3. Your site will be at `https://suhanichawla.github.io/whisper-on-prem`
 
 #### Option C: Any Web Host
 

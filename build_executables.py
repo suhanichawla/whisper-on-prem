@@ -228,7 +228,7 @@ The app will download Whisper models on first use (this may take a few minutes).
 
 The app needs microphone access for speech recognition.
 
-For more information, visit: https://github.com/yourusername/whisper-speech-app
+For more information, visit: https://github.com/suhanichawla/whisper-on-prem
 """
 
     with open(dist_dir / "README.txt", "w") as f:
