@@ -47,8 +47,8 @@ VIAddVersionKey "LegalCopyright" "© ${APP_PUBLISHER}"
 Section "Install" SecInstall
     SetOutPath "$INSTDIR"
 
-    ; Copy all application files
-    File /r "dist\WhisperSpeechApp\*.*"
+    ; Copy all application files from the dist directory
+    File /r "..\..\dist\WhisperSpeechApp\*.*"
 
     ; Create shortcuts
     CreateDirectory "$SMPROGRAMS\${APP_NAME}"

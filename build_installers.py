@@ -15,13 +15,13 @@ def safe_print(message):
         ascii_message = message.replace("🚀", "[*]").replace("✅", "[OK]").replace("📦", "[PKG]").replace("❌", "[ERR]").replace("⚠️", "[WARN]").replace("🏗️", "[BUILD]").replace("📁", "[DIR]")
         print(ascii_message.encode('ascii', errors='ignore').decode('ascii'))
 
-def run_command(cmd, description=""):
+def run_command(cmd, description="", cwd=None):
     """Run a command and handle errors"""
     if description:
         safe_print(f"🏗️ {description}")
 
     try:
-        result = subprocess.run(cmd, shell=True, check=True, capture_output=True, text=True)
+        result = subprocess.run(cmd, shell=True, check=True, capture_output=True, text=True, cwd=cwd)
         return True, result.stdout
     except subprocess.CalledProcessError as e:
         safe_print(f"❌ Error: {e}")
@@ -66,6 +66,11 @@ def build_windows_installer():
     """Build Windows NSIS installer"""
     safe_print("🏗️ Building Windows installer...")
 
+    # Check if dist directory exists
+    if not os.path.exists("dist/WhisperSpeechApp"):
+        safe_print("❌ dist/WhisperSpeechApp directory not found. Please build executables first.")
+        return False
+
     # Check if NSIS is available
     nsis_paths = [
         "C:\\Program Files (x86)\\NSIS\\makensis.exe",
@@ -86,27 +91,36 @@ def build_windows_installer():
 
     # Ensure directories exist
     os.makedirs("installers/windows", exist_ok=True)
+    os.makedirs("distributions", exist_ok=True)
 
     # Create license file
     create_license_file()
 
-    # Build installer
-    cmd = f'"{nsis_exe}" installers/windows/installer.nsi'
-    success, output = run_command(cmd, "Creating Windows installer")
+    # Change to the installers/windows directory to run NSIS
+    original_dir = os.getcwd()
+    try:
+        os.chdir("installers/windows")
 
-    if success:
-        # Move installer to distributions
-        installer_path = "installers/windows/WhisperSpeechApp-Setup.exe"
-        if os.path.exists(installer_path):
-            os.makedirs("distributions", exist_ok=True)
-            shutil.move(installer_path, "distributions/")
-            safe_print("✅ Windows installer created: distributions/WhisperSpeechApp-Setup.exe")
-            return True
+        # Build installer (NSIS will create the .exe in the current directory)
+        cmd = f'"{nsis_exe}" installer.nsi'
+        success, output = run_command(cmd, "Creating Windows installer")
+
+        if success:
+            # Check if installer was created
+            if os.path.exists("WhisperSpeechApp-Setup.exe"):
+                # Move installer to distributions folder
+                shutil.move("WhisperSpeechApp-Setup.exe", "../../distributions/")
+                safe_print("✅ Windows installer created: distributions/WhisperSpeechApp-Setup.exe")
+                return True
+            else:
+                safe_print("❌ Installer was not created")
+                return False
         else:
-            safe_print(f"❌ Installer not found at {installer_path}")
             return False
 
-    return False
+    finally:
+        # Always return to original directory
+        os.chdir(original_dir)
 
 def build_macos_installer():
     """Build macOS DMG installer"""

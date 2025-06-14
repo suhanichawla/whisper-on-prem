@@ -64,6 +64,16 @@ jobs:
     - name: Build executables
       run: python build_executables.py
 
+    - name: Debug - Check dist directory (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        Write-Host "Checking dist directory structure:"
+        if (Test-Path "dist") {
+          Get-ChildItem -Path dist -Recurse | Select-Object FullName
+        } else {
+          Write-Host "No dist directory found"
+        }
+
     - name: Build Windows installer
       if: matrix.os == 'windows-latest'
       run: |
