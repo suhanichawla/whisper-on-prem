@@ -67,8 +67,8 @@ jobs:
     - name: Build Windows installer
       if: matrix.os == 'windows-latest'
       run: |
-        # Create necessary directories
-        mkdir -p installers/windows
+        # Ensure directories exist (PowerShell compatible)
+        if (-not (Test-Path "installers\windows")) { New-Item -ItemType Directory -Path "installers\windows" -Force }
         python build_installers.py
 
     - name: Build macOS installer

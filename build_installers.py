@@ -54,6 +54,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
 
+    # Ensure directory exists
+    os.makedirs("installers/windows", exist_ok=True)
+
     with open("installers/windows/license.txt", "w") as f:
         f.write(license_content)
 
@@ -81,6 +84,9 @@ def build_windows_installer():
         safe_print("   Download and install, then rerun this script.")
         return False
 
+    # Ensure directories exist
+    os.makedirs("installers/windows", exist_ok=True)
+
     # Create license file
     create_license_file()
 
@@ -90,11 +96,15 @@ def build_windows_installer():
 
     if success:
         # Move installer to distributions
-        if os.path.exists("installers/windows/WhisperSpeechApp-Setup.exe"):
+        installer_path = "installers/windows/WhisperSpeechApp-Setup.exe"
+        if os.path.exists(installer_path):
             os.makedirs("distributions", exist_ok=True)
-            shutil.move("installers/windows/WhisperSpeechApp-Setup.exe", "distributions/")
+            shutil.move(installer_path, "distributions/")
             safe_print("✅ Windows installer created: distributions/WhisperSpeechApp-Setup.exe")
             return True
+        else:
+            safe_print(f"❌ Installer not found at {installer_path}")
+            return False
 
     return False
 
@@ -102,11 +112,17 @@ def build_macos_installer():
     """Build macOS DMG installer"""
     safe_print("🏗️ Building macOS installer...")
 
+    # Ensure script exists and is executable
+    script_path = "installers/macos/create_dmg.sh"
+    if not os.path.exists(script_path):
+        safe_print(f"❌ Script not found: {script_path}")
+        return False
+
     # Make script executable
-    os.chmod("installers/macos/create_dmg.sh", 0o755)
+    os.chmod(script_path, 0o755)
 
     # Run DMG creation script
-    success, output = run_command("bash installers/macos/create_dmg.sh", "Creating macOS DMG")
+    success, output = run_command(f"bash {script_path}", "Creating macOS DMG")
 
     if success:
         safe_print("✅ macOS installer created")
@@ -118,11 +134,17 @@ def build_linux_installer():
     """Build Linux AppImage and .deb package"""
     safe_print("🏗️ Building Linux installers...")
 
+    # Ensure script exists and is executable
+    script_path = "installers/linux/create_appimage.sh"
+    if not os.path.exists(script_path):
+        safe_print(f"❌ Script not found: {script_path}")
+        return False
+
     # Make script executable
-    os.chmod("installers/linux/create_appimage.sh", 0o755)
+    os.chmod(script_path, 0o755)
 
     # Run AppImage creation script
-    success, output = run_command("bash installers/linux/create_appimage.sh", "Creating Linux packages")
+    success, output = run_command(f"bash {script_path}", "Creating Linux packages")
 
     if success:
         safe_print("✅ Linux installers created")
