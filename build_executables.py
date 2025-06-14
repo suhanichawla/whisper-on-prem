@@ -7,13 +7,22 @@ import platform
 import shutil
 from pathlib import Path
 
+def safe_print(message):
+    """Print message with fallback for Windows encoding issues"""
+    try:
+        print(message)
+    except UnicodeEncodeError:
+        # Replace common emojis with ASCII alternatives
+        ascii_message = message.replace("🚀", "[*]").replace("✅", "[OK]").replace("📦", "[PKG]").replace("❌", "[ERR]").replace("⚠️", "[WARN]").replace("🏗️", "[BUILD]").replace("📁", "[DIR]")
+        print(ascii_message.encode('ascii', errors='ignore').decode('ascii'))
+
 def install_pyinstaller():
     """Install PyInstaller if not already installed"""
     try:
         import PyInstaller
-        print("✅ PyInstaller already installed")
+        safe_print("✅ PyInstaller already installed")
     except ImportError:
-        print("📦 Installing PyInstaller...")
+        safe_print("📦 Installing PyInstaller...")
         try:
             # Try installing from public PyPI (workaround for corporate environments)
             subprocess.check_call([
@@ -23,7 +32,7 @@ def install_pyinstaller():
                 "pyinstaller"
             ])
         except subprocess.CalledProcessError:
-            print("⚠️  Failed to install from public PyPI, trying alternative...")
+            safe_print("⚠️  Failed to install from public PyPI, trying alternative...")
             try:
                 # Alternative: try with --user flag
                 subprocess.check_call([
@@ -33,12 +42,12 @@ def install_pyinstaller():
                     "pyinstaller"
                 ])
             except subprocess.CalledProcessError as e:
-                print(f"❌ Failed to install PyInstaller: {e}")
-                print("\n🔧 Manual installation required:")
-                print("Try running one of these commands:")
-                print("  pip install --index-url https://pypi.org/simple/ pyinstaller")
-                print("  pip install --user --index-url https://pypi.org/simple/ pyinstaller")
-                print("  python -m pip install --upgrade --index-url https://pypi.org/simple/ pyinstaller")
+                safe_print(f"❌ Failed to install PyInstaller: {e}")
+                safe_print("\n🔧 Manual installation required:")
+                safe_print("Try running one of these commands:")
+                safe_print("  pip install --index-url https://pypi.org/simple/ pyinstaller")
+                safe_print("  pip install --user --index-url https://pypi.org/simple/ pyinstaller")
+                safe_print("  python -m pip install --upgrade --index-url https://pypi.org/simple/ pyinstaller")
                 sys.exit(1)
 
 def create_spec_file():
@@ -149,12 +158,12 @@ if sys.platform == 'darwin':
 
     with open('whisper_app.spec', 'w') as f:
         f.write(spec_content.strip())
-    print("✅ Created PyInstaller spec file")
+    safe_print("✅ Created PyInstaller spec file")
 
 def build_executable():
     """Build the executable using PyInstaller"""
     system = platform.system().lower()
-    print(f"🏗️ Building executable for {system}...")
+    safe_print(f"🏗️ Building executable for {system}...")
 
     try:
         # Clean previous builds
@@ -167,14 +176,14 @@ def build_executable():
         cmd = [sys.executable, "-m", "PyInstaller", "whisper_app.spec", "--clean"]
         subprocess.check_call(cmd)
 
-        print("✅ Executable built successfully!")
-        print(f"📁 Output location: {os.path.abspath('dist')}")
+        safe_print("✅ Executable built successfully!")
+        safe_print(f"📁 Output location: {os.path.abspath('dist')}")
 
         # Create distribution folder
         create_distribution_package(system)
 
     except subprocess.CalledProcessError as e:
-        print(f"❌ Build failed: {e}")
+        safe_print(f"❌ Build failed: {e}")
         return False
 
     return True
@@ -197,13 +206,13 @@ def create_distribution_package(system):
         if app_source.exists():
             shutil.copytree(app_source, dist_dir / "WhisperSpeechApp.app")
         else:
-            print(f"⚠️  macOS app bundle not found at {app_source}")
+            safe_print(f"⚠️  macOS app bundle not found at {app_source}")
     else:
         exe_source = Path("dist/WhisperSpeechApp")
         if exe_source.exists():
             shutil.copytree(exe_source, dist_dir / "WhisperSpeechApp")
         else:
-            print(f"⚠️  Executable directory not found at {exe_source}")
+            safe_print(f"⚠️  Executable directory not found at {exe_source}")
 
     # Create README for distribution
     readme_content = f"""# Whisper Speech App - {system.title()} Distribution
@@ -254,11 +263,11 @@ For more information, visit: https://github.com/suhanichawla/whisper-on-prem
 
     shutil.make_archive(f"distributions/{dist_name}", 'zip', dist_dir)
 
-    print(f"📦 Distribution package created: {dist_name}.zip")
+    safe_print(f"📦 Distribution package created: {dist_name}.zip")
 
 def main():
-    print("🚀 Building Whisper Speech App Executables")
-    print("=" * 50)
+    safe_print("🚀 Building Whisper Speech App Executables")
+    safe_print("=" * 50)
 
     # Install PyInstaller
     install_pyinstaller()
@@ -268,13 +277,13 @@ def main():
 
     # Build executable
     if build_executable():
-        print("\n✅ Build completed successfully!")
-        print("\n📋 Next steps:")
-        print("1. Test the executable in the 'dist' folder")
-        print("2. Upload the zip files from 'distributions' folder to your website")
-        print("3. Create a simple download page")
+        safe_print("\n✅ Build completed successfully!")
+        safe_print("\n📋 Next steps:")
+        safe_print("1. Test the executable in the 'dist' folder")
+        safe_print("2. Upload the zip files from 'distributions' folder to your website")
+        safe_print("3. Create a simple download page")
     else:
-        print("\n❌ Build failed. Check the error messages above.")
+        safe_print("\n❌ Build failed. Check the error messages above.")
 
 if __name__ == "__main__":
     main()
