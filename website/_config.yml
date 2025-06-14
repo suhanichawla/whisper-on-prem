@@ -1,7 +1,7 @@
 title: "Whisper Speech App"
 description: "Privacy-focused desktop app for speech-to-text using OpenAI Whisper"
 url: "https://suhanichawla.github.io"
-baseurl: "/whisper-speech-app"
+baseurl: "/whisper-on-prem"
 
 # GitHub Pages settings
 plugins:

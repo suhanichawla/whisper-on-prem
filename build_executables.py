@@ -184,6 +184,10 @@ def create_distribution_package(system):
     dist_name = f"WhisperSpeechApp-{system}-{platform.machine()}"
     dist_dir = Path(f"distributions/{dist_name}")
 
+    # Remove existing distribution directory if it exists
+    if dist_dir.exists():
+        shutil.rmtree(dist_dir)
+
     # Create distribution directory
     dist_dir.mkdir(parents=True, exist_ok=True)
 
@@ -192,10 +196,14 @@ def create_distribution_package(system):
         app_source = Path("dist/WhisperSpeechApp.app")
         if app_source.exists():
             shutil.copytree(app_source, dist_dir / "WhisperSpeechApp.app")
+        else:
+            print(f"⚠️  macOS app bundle not found at {app_source}")
     else:
         exe_source = Path("dist/WhisperSpeechApp")
         if exe_source.exists():
             shutil.copytree(exe_source, dist_dir / "WhisperSpeechApp")
+        else:
+            print(f"⚠️  Executable directory not found at {exe_source}")
 
     # Create README for distribution
     readme_content = f"""# Whisper Speech App - {system.title()} Distribution
@@ -239,11 +247,14 @@ For more information, visit: https://github.com/suhanichawla/whisper-on-prem
         if os.path.exists(file):
             shutil.copy2(file, dist_dir)
 
-    # Create zip archive
-    archive_name = f"{dist_name}.zip"
+    # Create zip archive (remove existing zip first)
+    zip_path = Path(f"distributions/{dist_name}.zip")
+    if zip_path.exists():
+        zip_path.unlink()
+
     shutil.make_archive(f"distributions/{dist_name}", 'zip', dist_dir)
 
-    print(f"📦 Distribution package created: {archive_name}")
+    print(f"📦 Distribution package created: {dist_name}.zip")
 
 def main():
     print("🚀 Building Whisper Speech App Executables")
