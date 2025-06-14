@@ -54,7 +54,14 @@ jobs:
     - name: Build executable
       run: python build_executables.py
 
-    - name: List distribution files (debug)
+    - name: List distribution files (Windows)
+      if: runner.os == 'Windows'
+      run: |
+        if (Test-Path "distributions") { Get-ChildItem -Path distributions -Recurse } else { Write-Host "No distributions folder" }
+        Get-ChildItem -Path . -Name "*.zip" -Recurse -ErrorAction SilentlyContinue
+
+    - name: List distribution files (Unix)
+      if: runner.os != 'Windows'
       run: |
         ls -la distributions/ || echo "No distributions folder"
         find . -name "*.zip" -type f || echo "No zip files found"
@@ -79,7 +86,7 @@ jobs:
       with:
         path: ./artifacts
 
-    - name: List downloaded artifacts (debug)
+    - name: List downloaded artifacts
       run: |
         find artifacts/ -type f -name "*.zip" || echo "No zip files in artifacts"
         ls -la artifacts/
