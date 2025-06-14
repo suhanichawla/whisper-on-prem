@@ -1,0 +1,122 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            platform: linux-x86_64
+            python-version: '3.9'
+          - os: windows-latest
+            platform: windows-AMD64
+            python-version: '3.9'
+          - os: macos-latest
+            platform: darwin-arm64
+            python-version: '3.9'
+          - os: macos-13  # Intel Mac
+            platform: darwin-x86_64
+            python-version: '3.9'
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install system dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y portaudio19-dev python3-pyaudio
+
+    - name: Install system dependencies (macOS)
+      if: startsWith(matrix.os, 'macos')
+      run: |
+        brew install portaudio
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install --index-url https://pypi.org/simple/ --trusted-host pypi.org pyinstaller
+        pip install -r requirements.txt
+
+    - name: Build executable
+      run: python build_executables.py
+
+    - name: List distribution files (debug)
+      run: |
+        ls -la distributions/ || echo "No distributions folder"
+        find . -name "*.zip" -type f || echo "No zip files found"
+
+    - name: Upload Release Asset
+      uses: actions/upload-artifact@v4
+      with:
+        name: WhisperSpeechApp-${{ matrix.platform }}
+        path: distributions/WhisperSpeechApp-${{ matrix.platform }}.zip
+        if-no-files-found: error
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ./artifacts
+
+    - name: List downloaded artifacts (debug)
+      run: |
+        find artifacts/ -type f -name "*.zip" || echo "No zip files in artifacts"
+        ls -la artifacts/
+
+    - name: Prepare release assets
+      run: |
+        mkdir -p release-assets
+        find artifacts/ -name "*.zip" -exec cp {} release-assets/ \;
+        ls -la release-assets/
+
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: release-assets/*.zip
+        draft: false
+        prerelease: false
+        generate_release_notes: true
+        body: |
+          ## 🎉 New Release of Whisper Speech App
+
+          ### Downloads
+          - **Windows**: WhisperSpeechApp-windows-AMD64.zip
+          - **macOS (Apple Silicon)**: WhisperSpeechApp-darwin-arm64.zip
+          - **macOS (Intel)**: WhisperSpeechApp-darwin-x86_64.zip
+          - **Linux**: WhisperSpeechApp-linux-x86_64.zip
+
+          ### Installation
+          1. Download the appropriate file for your platform
+          2. Extract the zip file
+          3. Run the application (see README in the extracted folder)
+
+          ### Features
+          - 🔒 100% private - all processing happens locally
+          - ⚡ Multiple Whisper models (tiny to large)
+          - 🎯 Global hotkey support (Fn key or Cmd+Space)
+          - 🚀 Auto-paste transcribed text
+
+          **Full Changelog**: https://github.com/${{ github.repository }}/compare/${{ github.event.before }}...${{ github.sha }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

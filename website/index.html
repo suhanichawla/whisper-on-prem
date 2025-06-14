@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Whisper Speech App - Download</title>
+    <meta name="description" content="Privacy-focused desktop app for speech-to-text using OpenAI Whisper. Download for Windows, macOS, and Linux.">
+    <meta name="keywords" content="speech to text, whisper, privacy, desktop app, transcription">
     <style>
         * {
             margin: 0;
@@ -132,11 +134,17 @@
             font-weight: 600;
             transition: all 0.3s ease;
             margin-top: 1rem;
+            cursor: pointer;
         }
 
         .download-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .download-btn.loading {
+            opacity: 0.7;
+            cursor: wait;
         }
 
         .system-requirements {
@@ -179,6 +187,34 @@
         .github-link:hover {
             text-decoration: underline;
         }
+
+        .version-info {
+            background: #e8f4fd;
+            border: 1px solid #bee3f8;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #2c5282;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .hero {
+                padding: 2rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -217,11 +253,11 @@
                         <div class="os-icon">🍎</div>
                         <h3>macOS</h3>
                         <p>macOS 10.14 or later</p>
-                        <a href="downloads/WhisperSpeechApp-darwin-arm64.zip" class="download-btn">
+                        <a href="#" class="download-btn" data-platform="darwin-arm64">
                             Download for Mac (Apple Silicon)
                         </a>
                         <br>
-                        <a href="downloads/WhisperSpeechApp-darwin-x86_64.zip" class="download-btn" style="margin-top: 0.5rem;">
+                        <a href="#" class="download-btn" data-platform="darwin-x86_64" style="margin-top: 0.5rem;">
                             Download for Mac (Intel)
                         </a>
                     </div>
@@ -230,7 +266,7 @@
                         <div class="os-icon">🖥️</div>
                         <h3>Windows</h3>
                         <p>Windows 10 or later</p>
-                        <a href="downloads/WhisperSpeechApp-windows-AMD64.zip" class="download-btn">
+                        <a href="#" class="download-btn" data-platform="windows-AMD64">
                             Download for Windows
                         </a>
                     </div>
@@ -239,10 +275,16 @@
                         <div class="os-icon">🐧</div>
                         <h3>Linux</h3>
                         <p>Ubuntu 18.04 or equivalent</p>
-                        <a href="downloads/WhisperSpeechApp-linux-x86_64.zip" class="download-btn">
+                        <a href="#" class="download-btn" data-platform="linux-x86_64">
                             Download for Linux
                         </a>
                     </div>
+                </div>
+
+                <div class="version-info">
+                    <p><strong>Latest Version:</strong> <span id="version-number">Loading...</span></p>
+                    <p><strong>Release Date:</strong> <span id="release-date">Loading...</span></p>
+                    <p><a href="#" id="all-releases-link" class="github-link">View all releases on GitHub</a></p>
                 </div>
             </div>
 
@@ -267,7 +309,7 @@
             <div class="footer">
                 <p>
                     Open source project available on
-                    <a href="https://github.com/yourusername/whisper-speech-app" class="github-link">GitHub</a>
+                    <a href="#" id="github-repo-link" class="github-link">GitHub</a>
                 </p>
                 <p style="margin-top: 1rem; font-size: 0.9rem;">
                     Built with ❤️ using OpenAI Whisper • Completely free and open source
@@ -277,6 +319,23 @@
     </div>
 
     <script>
+        // Configuration - UPDATE THESE VALUES
+        const GITHUB_OWNER = 'YOUR_USERNAME'; // Replace with your GitHub username
+        const GITHUB_REPO = 'whisper-speech-app'; // Replace with your repo name
+
+        // GitHub API URLs
+        const GITHUB_API_URL = `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}`;
+        const RELEASES_URL = `${GITHUB_API_URL}/releases/latest`;
+        const REPO_URL = `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}`;
+
+        // Platform mapping
+        const PLATFORM_MAPPING = {
+            'darwin-arm64': 'WhisperSpeechApp-darwin-arm64.zip',
+            'darwin-x86_64': 'WhisperSpeechApp-darwin-x86_64.zip',
+            'windows-AMD64': 'WhisperSpeechApp-windows-AMD64.zip',
+            'linux-x86_64': 'WhisperSpeechApp-linux-x86_64.zip'
+        };
+
         // Auto-detect user's operating system and highlight the appropriate download
         function detectOS() {
             const userAgent = window.navigator.userAgent;
@@ -305,8 +364,90 @@
             }
         }
 
-        // Run on page load
-        window.addEventListener('DOMContentLoaded', detectOS);
+        // Fetch latest release information
+        async function fetchLatestRelease() {
+            try {
+                const response = await fetch(RELEASES_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const release = await response.json();
+                return release;
+            } catch (error) {
+                console.error('Error fetching release:', error);
+                return null;
+            }
+        }
+
+        // Setup download links
+        async function setupDownloadLinks() {
+            const release = await fetchLatestRelease();
+
+            if (!release) {
+                // Fallback: show error or direct to GitHub
+                document.getElementById('version-number').textContent = 'Error loading';
+                document.getElementById('release-date').textContent = 'Visit GitHub for downloads';
+                document.getElementById('all-releases-link').href = `${REPO_URL}/releases`;
+
+                // Make download buttons link to GitHub releases
+                document.querySelectorAll('.download-btn').forEach(btn => {
+                    btn.href = `${REPO_URL}/releases/latest`;
+                    btn.textContent = 'Download from GitHub';
+                });
+                return;
+            }
+
+            // Update version info
+            document.getElementById('version-number').textContent = release.tag_name;
+            document.getElementById('release-date').textContent = new Date(release.published_at).toLocaleDateString();
+            document.getElementById('all-releases-link').href = `${REPO_URL}/releases`;
+
+            // Setup download buttons
+            document.querySelectorAll('.download-btn').forEach(btn => {
+                const platform = btn.getAttribute('data-platform');
+                const expectedFileName = PLATFORM_MAPPING[platform];
+
+                if (expectedFileName) {
+                    const asset = release.assets.find(asset =>
+                        asset.name === expectedFileName ||
+                        asset.name.includes(platform)
+                    );
+
+                    if (asset) {
+                        btn.href = asset.browser_download_url;
+                        btn.addEventListener('click', function() {
+                            this.classList.add('loading');
+                            this.textContent = 'Downloading...';
+                            setTimeout(() => {
+                                this.classList.remove('loading');
+                                this.textContent = this.getAttribute('data-original-text') || 'Download';
+                            }, 3000);
+                        });
+                    } else {
+                        btn.href = `${REPO_URL}/releases/latest`;
+                        btn.textContent = 'View on GitHub';
+                    }
+                }
+            });
+        }
+
+        // Set GitHub repo links
+        function setupGitHubLinks() {
+            document.getElementById('github-repo-link').href = REPO_URL;
+            document.getElementById('all-releases-link').href = `${REPO_URL}/releases`;
+        }
+
+        // Initialize page
+        window.addEventListener('DOMContentLoaded', function() {
+            detectOS();
+            setupGitHubLinks();
+            setupDownloadLinks();
+
+            // Store original button text
+            document.querySelectorAll('.download-btn').forEach(btn => {
+                btn.setAttribute('data-original-text', btn.textContent);
+            });
+        });
     </script>
 </body>
 </html>

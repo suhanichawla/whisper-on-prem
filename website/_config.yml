@@ -1,0 +1,20 @@
+title: "Whisper Speech App"
+description: "Privacy-focused desktop app for speech-to-text using OpenAI Whisper"
+url: "https://YOUR_USERNAME.github.io"
+baseurl: "/whisper-speech-app"
+
+# GitHub Pages settings
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+# SEO settings
+author: "YOUR_NAME"
+twitter:
+  username: YOUR_TWITTER_HANDLE
+
+# Exclude files from processing
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
